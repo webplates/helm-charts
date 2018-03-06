@@ -1,0 +1,69 @@
+apiVersion: {{ if ge .Capabilities.KubeVersion.Minor "9" }}apps/v1{{- else }}apps/v1beta2{{- end }}
+kind: Deployment
+metadata:
+  name: {{ template "stunnel.fullname" . }}
+  labels:
+    app: {{ template "stunnel.name" . }}
+    chart: {{ template "stunnel.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "stunnel.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "stunnel.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config-services: {{ include (print $.Template.BasePath "/configmap.services.yaml") . | sha256sum }}
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: {{ if .Values.existingConfigMap }}{{ (tpl .Values.existingConfigMap . ) | quote }}{{- else }}{{ template "stunnel.fullname" . }}{{- end }}
+        - name: services
+          configMap:
+            name: {{ template "stunnel.fullname" . }}-services
+      {{- with .Values.extraVolumes }}
+{{ toYaml . | indent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- with .Values.services }}
+          ports:
+          {{- range . }}
+            - name: {{ .name }}
+              containerPort: {{ .port }}
+              protocol: TCP
+          {{- end }}
+        {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/stunnel/stunnel.conf
+              subPath: stunnel.conf
+            - name: services
+              mountPath: /etc/stunnel/conf.d
+          {{- with .Values.extraVolumeMounts }}
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

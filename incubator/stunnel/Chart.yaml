@@ -1,0 +1,10 @@
+apiVersion: v1
+appVersion: "5.43"
+description: Stunnel is a proxy designed to add TLS encryption functionality to existing clients and servers without any changes in the programs' code.
+name: stunnel
+version: 0.1.0
+keywords:
+  - proxy
+  - tls
+icon: https://www.stunnel.org/favicon.ico
+home: https://www.stunnel.org

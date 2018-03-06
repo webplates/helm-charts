@@ -1,0 +1,22 @@
+{{- if (empty .Values.existingConfigMap) -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "stunnel.fullname" . }}
+  labels:
+    app: {{ template "stunnel.name" . }}
+    chart: {{ template "stunnel.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  stunnel.conf: |-
+    foreground = yes
+    output     = /dev/stdout
+    syslog     = no
+    include    = /etc/stunnel/conf.d
+{{- with .Values.config }}
+  {{- range $key, $value := .Values.config }}
+    {{ $key }} = {{ $value }}
+  {{- end }}
+{{- end }}
+{{- end -}}

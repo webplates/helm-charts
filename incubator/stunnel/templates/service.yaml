@@ -1,0 +1,23 @@
+{{- if .Values.services -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stunnel.fullname" . }}
+  labels:
+    app: {{ template "stunnel.name" . }}
+    chart: {{ template "stunnel.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  {{- range .Values.services }}
+    - port: {{ .port }}
+      targetPort: {{ .name }}
+      protocol: TCP
+      name: {{ .name }}
+  {{- end }}
+  selector:
+    app: {{ template "stunnel.name" . }}
+    release: {{ .Release.Name }}
+{{- end -}}

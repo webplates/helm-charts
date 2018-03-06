@@ -1,0 +1,11 @@
+{{- with .Values.services }}
+The following services are installed:
+{{ range . }}
+[{{ .name }}]
+Listening on port {{ .port }}
+{{- with .config.connect }}
+Connecting to {{ . }}
+{{- end }}
+
+{{ end }}
+{{- end }}

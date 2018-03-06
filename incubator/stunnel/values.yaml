@@ -1,0 +1,71 @@
+replicaCount: 1
+
+## Application image
+##
+image:
+  repository: webplates/stunnel
+  tag: 5.43
+  pullPolicy: IfNotPresent
+
+## Bind connections to this interface
+##
+bind: 0.0.0.0
+
+## Custom application configuration
+##
+config: {}
+
+## List of services
+##
+services: []
+  # - name: mongo
+  #   port: 27018
+  #   config:
+  #     connect: mongodb.example.com:27018
+  #     CAfile: /etc/stunnel/certs/mongo/ca.crt
+
+## ConfigMap override for the application config
+## Defining existingConfigMap will cause templates/configmap.yaml
+## to NOT generate a ConfigMap resource
+##
+existingConfigMap: ""
+
+## Extra volumes containing additional files (eg. CA certificates)
+## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
+##
+extraVolumes: []
+
+## Extra volume mounts
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/
+##
+extraVolumeMounts: []
+
+## Resource requests and limits
+## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Node tolerations for scheduling to nodes with taints
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
