@@ -1,0 +1,36 @@
+language: generic
+
+sudo: false
+
+env:
+    global:
+        - HELM_VERSION=2.8.1
+
+install:
+    - wget https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz
+    - tar -zxvf helm-v${HELM_VERSION}-linux-amd64.tar.gz
+    - chmod +x linux-amd64/helm
+    - mkdir -p $HOME/bin
+    - mv linux-amd64/helm $HOME/bin
+    - rm -rf linux-amd64/ helm-v${HELM_VERSION}-linux-amd64.tar.gz
+
+before_script:
+    - helm init -c
+    - helm repo add webplates-incubator http://charts.webplates.org/incubator
+    - helm repo update
+    - mkdir -p dist/incubator
+
+script:
+    - find ./incubator/* -maxdepth 0 -type d -exec helm lint {} \;
+    - find ./incubator/* -maxdepth 0 -type d -exec helm package -d dist/incubator/ {} \;
+    - helm repo index ./dist/incubator/ --merge $(helm home)/repository/cache/webplates-incubator-index.yaml
+
+deploy:
+    provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    keep-history: true
+    local-dir: dist
+    committer-from-gh: true
+    on:
+        branch: master
