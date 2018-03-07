@@ -3,7 +3,7 @@ entries:
   stunnel:
   - apiVersion: v1
     appVersion: "5.43"
-    created: 2018-03-06T15:36:31.282667+01:00
+    created: 2018-03-07T00:17:23.030059372Z
     description: Stunnel is a proxy designed to add TLS encryption functionality to
       existing clients and servers without any changes in the programs' code.
     digest: b54e48afdb93753ad2c57caee4924dc7c8fb6f012bf4a416d7a5228b3288d8ab
@@ -16,4 +16,4 @@ entries:
     urls:
     - stunnel-0.1.0.tgz
     version: 0.1.0
-generated: 2018-03-06T15:36:31.281805+01:00
+generated: 2018-03-07T00:17:23.02894277Z
