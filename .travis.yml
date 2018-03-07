@@ -24,6 +24,7 @@ script:
     - find ./incubator/* -maxdepth 0 -type d -exec helm lint {} \;
     - find ./incubator/* -maxdepth 0 -type d -exec helm package -d dist/incubator/ {} \;
     - helm repo index ./dist/incubator/ --merge $(helm home)/repository/cache/webplates-incubator-index.yaml
+    - cp -r gh-pages/* dist/
 
 deploy:
     provider: pages
